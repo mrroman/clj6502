@@ -16,4 +16,5 @@
                        [189 (lsb x) (msb x)])
          (vector? x) [177 (first x)])))
 
-
+(defn ldx [x]
+  (cond (keyword? x) [162 (Integer/parseInt (name x))]))
