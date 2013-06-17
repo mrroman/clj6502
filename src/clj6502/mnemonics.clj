@@ -22,9 +22,18 @@
          (and (number? x) (= :y y)) (absolute 185 x)
          (vector? x) [177 (first x)])))
 
-(defn ldx 
+(defn ldx
   ([x]
    (cond (keyword? x) (immediate 162 x)
-             (number? x) (absolute 174 166 x)))
+         (number? x) (absolute 174 166 x)))
   ([x y]
    (cond (and (number? x) (= :y y)) (absolute 190 182 x))))
+
+(defn ldy
+  ([x]
+   (cond (keyword? x) (immediate 160 x)
+         (number? x) (absolute 172 164 x)))
+  ([x y]
+   (cond (and (number? x) (= :x y)) (absolute 188 180 x))))
+
+
