@@ -9,16 +9,18 @@
 
 (defn absolute 
   ([code x] [(hex code) (lsb x) (msb x)])
-  ([code code-zero x] (if (< x 256)
-                        [(hex code-zero) x]
-                        [(hex code) (lsb x) (msb x)])))
+  ([code code-zero x] (if (nil? code-zero)
+                        (absolute code x)
+                        (if (< x 256)
+                          [(hex code-zero) x]
+                          [(hex code) (lsb x) (msb x)]))))
 
 (def absolute? number?)
 (defn absolute-idx? [x y idx]
   (and (number? x) (= idx y)))
 
 (defmacro mnemonic [m-name 
-                    & {:keys [immediate zero-page zero-page-x absolute absolute-x absolute-y indirect indirect-x indirect-y accumulator implied]}]
+                    & {:keys [immediate zero-page zero-page-x zero-page-y absolute absolute-x absolute-y indirect indirect-x indirect-y accumulator implied]}]
   `(defn ~m-name
      ([]
       [(hex ~implied)])
@@ -34,7 +36,7 @@
                            [(hex ~indirect-x) (first x#)])))
      ([x# y#]
       (cond (absolute-idx? x# y# :x) (absolute ~absolute-x ~zero-page-x x#)
-            (absolute-idx? x# y# :y) (absolute ~absolute-y x#)
+            (absolute-idx? x# y# :y) (absolute ~absolute-y ~zero-page-y x#)
             (vector? x#) [(hex ~indirect-y) (first x#)]))))
 
 (mnemonic adc
@@ -177,6 +179,7 @@
 (mnemonic ldx
           :immediate :A2
           :zero-page :A6
+          :zero-page-y :B6
           :absolute :AE
           :absolute-y :BE
                  )
@@ -287,6 +290,7 @@
 
 (mnemonic stx
           :zero-page :86
+          :zero-page-y :96
           :absolute :8E
                  )
 
